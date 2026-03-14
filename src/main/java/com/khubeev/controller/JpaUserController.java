@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/jpa/users")
@@ -41,7 +43,10 @@ public class JpaUserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> createUser(@RequestBody CreateUserRequest request) {
         try {
-            UserDto createdUser = jpaUserService.createUser(request.getUsername());
+            UserDto createdUser = jpaUserService.createUser(
+                    request.getUsername(),
+                    request.getPassword()
+            );
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
@@ -62,5 +67,20 @@ public class JpaUserController {
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         jpaUserService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody CreateUserRequest request) {
+        try {
+            UserDto createdUser = jpaUserService.createUser(
+                    request.getUsername(),
+                    request.getPassword()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 }
