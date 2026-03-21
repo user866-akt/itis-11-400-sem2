@@ -35,6 +35,12 @@ dependencies {
     implementation("org.freemarker:freemarker:$freemarkerVersion")
     implementation("com.zaxxer:HikariCP:$hikariVersion")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.3")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-parameters")
+    options.encoding = "UTF-8"
 }
 
 tasks.test {
